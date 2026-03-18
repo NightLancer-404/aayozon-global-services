@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { CONTACT_DETAILS } from "@/lib/contact";
 
 const Footer = () => (
   <footer className="bg-foreground text-primary-foreground">
@@ -14,7 +15,7 @@ const Footer = () => (
         <div>
           <h4 className="mb-4 font-display text-lg font-semibold">Quick Links</h4>
           <ul className="space-y-2 font-body text-sm opacity-80">
-            {[{l:"About Us",t:"/about"},{l:"Treatments",t:"/treatments"},{l:"Packages",t:"/packages"},{l:"Blog",t:"/blog"},{l:"FAQ",t:"/faq"},{l:"Contact",t:"/contact"}].map(i=>(
+            {[{l:"About Us",t:"/about"},{l:"Treatments",t:"/treatments"},{l:"Packages",t:"/packages"},{l:"Travel Assistance",t:"/travel-assistance"},{l:"Hotels & Stay",t:"/hotels"},{l:"Blog",t:"/blog"},{l:"FAQ",t:"/faq"},{l:"Contact",t:"/contact"}].map(i=>(
               <li key={i.t}><Link to={i.t} className="transition-opacity hover:opacity-100">{i.l}</Link></li>
             ))}
           </ul>
@@ -30,9 +31,9 @@ const Footer = () => (
         <div>
           <h4 className="mb-4 font-display text-lg font-semibold">Contact</h4>
           <ul className="space-y-3 font-body text-sm opacity-80">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> New Delhi, India</li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /> +91 99999 99999</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> info@aayozon.com</li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> {CONTACT_DETAILS.address}</li>
+            <li className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /> {CONTACT_DETAILS.phone}</li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /> {CONTACT_DETAILS.email}</li>
           </ul>
         </div>
       </div>

@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import AboutPage from "./pages/About";
 import { TreatmentsListPage, TreatmentDetailPage } from "./pages/Treatments";
 import { PackagesListPage, PackageDetailPage } from "./pages/Packages";
+import TravelAssistancePage from "./pages/TravelAssistance";
+import { HotelsListPage, HotelDetailPage } from "./pages/Hotels";
 import FAQPage from "./pages/FAQ";
 import BlogPage from "./pages/Blog";
 import ContactPage from "./pages/Contact";
@@ -32,6 +34,9 @@ const App = () => (
             <Route path="/treatments/:slug" element={<TreatmentDetailPage />} />
             <Route path="/packages" element={<PackagesListPage />} />
             <Route path="/packages/:slug" element={<PackageDetailPage />} />
+            <Route path="/travel-assistance" element={<TravelAssistancePage />} />
+            <Route path="/hotels" element={<HotelsListPage />} />
+            <Route path="/hotels/:slug" element={<HotelDetailPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactPage />} />

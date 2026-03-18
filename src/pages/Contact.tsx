@@ -1,14 +1,51 @@
 import { useState, useRef } from "react";
 import { MapPin, Mail, Phone, Upload, ArrowRight } from "lucide-react";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
+import { useToast } from "@/hooks/use-toast";
+import { CONTACT_DETAILS, submitContactRequest } from "@/lib/contact";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", country: "", treatment: "", message: "" });
   const [fileName, setFileName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) setFileName(e.target.files[0].name);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await submitContactRequest({
+        source: "contact_page",
+        ...formData,
+        fileName: fileName || undefined,
+        createdAt: new Date().toISOString(),
+      });
+
+      setFormData({ name: "", email: "", phone: "", country: "", treatment: "", message: "" });
+      setFileName("");
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+      toast({
+        title: "Request sent",
+        description: "Thanks for reaching out. Our team will contact you within 24 hours.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Submission failed",
+        description: "Please try again or email us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -32,15 +69,15 @@ const ContactPage = () => {
               <div className="mt-8 space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10"><MapPin className="h-5 w-5 text-primary" /></div>
-                  <div><h4 className="font-display font-semibold text-foreground">Office Address</h4><p className="text-sm text-muted-foreground">New Delhi, India 110001</p></div>
+                  <div><h4 className="font-display font-semibold text-foreground">Office Address</h4><p className="text-sm text-muted-foreground">{CONTACT_DETAILS.address}</p></div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10"><Mail className="h-5 w-5 text-primary" /></div>
-                  <div><h4 className="font-display font-semibold text-foreground">Email</h4><p className="text-sm text-muted-foreground">info@aayozon.com</p></div>
+                  <div><h4 className="font-display font-semibold text-foreground">Email</h4><p className="text-sm text-muted-foreground">{CONTACT_DETAILS.email}</p></div>
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10"><Phone className="h-5 w-5 text-primary" /></div>
-                  <div><h4 className="font-display font-semibold text-foreground">Phone / WhatsApp</h4><p className="text-sm text-muted-foreground">+91 99999 99999</p></div>
+                  <div><h4 className="font-display font-semibold text-foreground">Phone / WhatsApp</h4><p className="text-sm text-muted-foreground">{CONTACT_DETAILS.phone}</p></div>
                 </div>
               </div>
             </AnimatedSection>
@@ -48,7 +85,7 @@ const ContactPage = () => {
             {/* Map */}
             <AnimatedSection className="mt-8 overflow-hidden rounded-xl">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.83923192776!2d77.06889754725782!3d28.52758200617607!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin"
+                src={CONTACT_DETAILS.mapEmbedUrl}
                 width="100%" height="250" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Office Location"
                 className="rounded-xl"
               />
@@ -58,8 +95,7 @@ const ContactPage = () => {
           {/* Form */}
           <div className="lg:col-span-3">
             <AnimatedSection animation="slide-in-right">
-              <form onSubmit={e => { e.preventDefault(); alert("Thank you! Our team will contact you within 24 hours."); }}
-                className="card-medical space-y-4">
+              <form onSubmit={handleSubmit} className="card-medical space-y-4">
                 <h2 className="font-display text-2xl font-bold text-foreground">Medical Inquiry Form</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <input type="text" placeholder="Full Name *" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
@@ -87,8 +123,8 @@ const ContactPage = () => {
                 </div>
                 <textarea placeholder="Tell us about your medical needs..." rows={4} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})}
                   className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20" />
-                <button type="submit" className="btn-primary-medical w-full text-base">
-                  Submit Inquiry <ArrowRight className="h-5 w-5" />
+                <button type="submit" className="btn-primary-medical w-full text-base" disabled={isSubmitting}>
+                  {isSubmitting ? "Submitting..." : "Submit Inquiry"} <ArrowRight className="h-5 w-5" />
                 </button>
               </form>
             </AnimatedSection>

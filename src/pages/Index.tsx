@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Heart, Bone, Sparkles, Baby, Shield, Stethoscope, Plane, Hotel, ClipboardList, HeartPulse, Building2, Star, ChevronRight, ArrowRight } from "lucide-react";
+import { Heart, Bone, Sparkles, Baby, Shield, Stethoscope, Plane, Hotel, ClipboardList, HeartPulse, Building2, Star, ChevronRight, ArrowRight, FileText, Car, MapPin } from "lucide-react";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
 import doctorHero from "@/assets/doctor-hero.png";
 import airplane from "@/assets/airplane.png";
@@ -10,14 +10,34 @@ import keralaImg from "@/assets/kerala-backwaters.jpg";
 import goaImg from "@/assets/goa-beach.jpg";
 import rajasthanImg from "@/assets/rajasthan-palace.jpg";
 import hospitalImg from "@/assets/hospital-modern.jpg";
+import hotelLuxury from "@/assets/hotel-luxury.jpg";
+import hotelBudget from "@/assets/hotel-budget.jpg";
+import hotelApartment from "@/assets/hotel-apartment.jpg";
+import hotelGuesthouse from "@/assets/hotel-guesthouse.jpg";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { submitContactRequest } from "@/lib/contact";
+
+const travelServices = [
+  { icon: FileText, title: "Visa Support", desc: "Complete visa documentation and application assistance" },
+  { icon: Plane, title: "Flight Booking", desc: "Best deals on international and domestic flights" },
+  { icon: Car, title: "Airport Pickup", desc: "Comfortable airport transfers to your destination" },
+  { icon: MapPin, title: "Local Transport", desc: "Dedicated vehicles for hospital visits and sightseeing" },
+];
+
+const hotelPreviews = [
+  { img: hotelLuxury, name: "Luxury Hotels", desc: "5-star comfort with premium amenities and concierge service", distance: "0.5 km from hospital" },
+  { img: hotelBudget, name: "Budget Hotels", desc: "Clean, comfortable stays at affordable rates", distance: "1 km from hospital" },
+  { img: hotelApartment, name: "Service Apartments", desc: "Home-like stays with kitchen and living space for families", distance: "1.5 km from hospital" },
+  { img: hotelGuesthouse, name: "Hospital Guest Houses", desc: "On-campus accommodation for immediate medical access", distance: "Within hospital campus" },
+];
 
 const services = [
   { icon: Stethoscope, title: "Medical Consultation", desc: "Expert medical opinions from top specialists across India" },
   { icon: ClipboardList, title: "Treatment Planning", desc: "Personalized treatment roadmaps tailored to your needs" },
   { icon: Building2, title: "Hospital Coordination", desc: "Seamless coordination with JCI/NABH accredited hospitals" },
-  { icon: Plane, title: "Travel Assistance", desc: "Visa support, airport transfers, and travel arrangements" },
-  { icon: Hotel, title: "Accommodation", desc: "Comfortable stays near hospitals with patient amenities" },
+  { icon: Plane, title: "Travel Assistance", desc: "Visa support, airport transfers, and travel arrangements", link: "/travel-assistance" },
+  { icon: Hotel, title: "Accommodation", desc: "Comfortable stays near hospitals with patient amenities", link: "/hotels" },
   { icon: HeartPulse, title: "Post Treatment Care", desc: "Follow-up consultations and recovery monitoring" },
 ];
 
@@ -52,6 +72,35 @@ const HomePage = () => {
   const stethY = useTransform(scrollY, [0, 500], [0, -40]);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: "", email: "", country: "", treatment: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await submitContactRequest({
+        source: "home_consultation",
+        ...formData,
+        createdAt: new Date().toISOString(),
+      });
+      setFormData({ name: "", email: "", country: "", treatment: "", message: "" });
+      toast({
+        title: "Request sent",
+        description: "Thanks! Our team will contact you within 24 hours.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Submission failed",
+        description: "Please try again or contact us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="font-body">
@@ -113,6 +162,11 @@ const HomePage = () => {
                 </div>
                 <h3 className="font-display text-lg font-semibold text-foreground">{s.title}</h3>
                 <p className="text-sm text-muted-foreground">{s.desc}</p>
+                {"link" in s && s.link && (
+                  <Link to={s.link} className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+                    Learn more <ChevronRight className="h-4 w-4" />
+                  </Link>
+                )}
               </AnimatedSection>
             ))}
           </div>
@@ -183,7 +237,65 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ===== PARTNER HOSPITALS ===== */}
+      {/* ===== TRAVEL ASSISTANCE PREVIEW ===== */}
+      <section className="section-padding">
+        <div className="container-main">
+          <AnimatedSection className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Travel Assistance <span className="gradient-text">Made Simple</span></h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">From visa to arrival, we take care of your entire journey.</p>
+          </AnimatedSection>
+          <div className="relative">
+            <motion.img src={airplane} alt="" className="absolute -right-2 -top-8 h-16 w-16 opacity-40 lg:h-24 lg:w-24" style={{ y: useTransform(scrollY, [800, 1600], [0, -30]) }} />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {travelServices.map(s => (
+                <AnimatedSection key={s.title} className="card-medical flex flex-col items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10">
+                    <s.icon className="h-6 w-6 text-secondary" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold text-foreground">{s.title}</h3>
+                  <p className="text-sm text-muted-foreground">{s.desc}</p>
+                </AnimatedSection>
+              ))}
+            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <Link to="/travel-assistance" className="btn-primary-medical">Explore Travel Assistance <ArrowRight className="h-5 w-5" /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== HOTELS & STAY PREVIEW ===== */}
+      <section className="section-alt section-padding">
+        <div className="container-main">
+          <AnimatedSection className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Comfortable Stay for a <span className="gradient-text">Smooth Recovery</span></h2>
+            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">Carefully selected stays near top hospitals.</p>
+          </AnimatedSection>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {hotelPreviews.map(h => (
+              <AnimatedSection key={h.name}>
+                <Link to="/hotels" className="card-medical group overflow-hidden p-0">
+                  <div className="relative h-44 overflow-hidden">
+                    <img src={h.img} alt={h.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-display text-base font-semibold text-foreground">{h.name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">{h.desc}</p>
+                    <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-accent">
+                      <MapPin className="h-3 w-3" /> {h.distance}
+                    </span>
+                  </div>
+                </Link>
+              </AnimatedSection>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link to="/hotels" className="btn-secondary-medical">View All Stays <ArrowRight className="h-5 w-5" /></Link>
+          </div>
+        </div>
+      </section>
+
+
       <section className="section-padding">
         <div className="container-main">
           <AnimatedSection className="mb-12 text-center">
@@ -264,7 +376,7 @@ const HomePage = () => {
           <AnimatedSection className="mx-auto max-w-2xl">
             <h2 className="mb-2 text-center font-display text-3xl font-bold text-foreground md:text-4xl">Get a <span className="gradient-text">Free Consultation</span></h2>
             <p className="mb-8 text-center text-muted-foreground">Fill in your details and our medical team will get back to you within 24 hours</p>
-            <form onSubmit={e => { e.preventDefault(); alert("Thank you! We will contact you shortly."); }} className="card-medical space-y-4">
+            <form onSubmit={handleSubmit} className="card-medical space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <input type="text" placeholder="Your Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
                   className="rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20" />
@@ -282,8 +394,8 @@ const HomePage = () => {
               </div>
               <textarea placeholder="Tell us about your medical needs..." rows={4} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})}
                 className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20" />
-              <button type="submit" className="btn-primary-medical w-full text-base">
-                Submit Inquiry <ArrowRight className="h-5 w-5" />
+              <button type="submit" className="btn-primary-medical w-full text-base" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Inquiry"} <ArrowRight className="h-5 w-5" />
               </button>
             </form>
           </AnimatedSection>
