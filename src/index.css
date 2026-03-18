@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 99%;
+    --foreground: 213 32% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 32% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 32% 12%;
+    --primary: 174 84% 32%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 91% 53%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 174 84% 32%;
+    --radius: 0.75rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 174 84% 32%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 213 32% 12%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 174 84% 32%;
+
+    /* Custom tokens */
+    --hero-gradient: linear-gradient(135deg, hsl(174 84% 32% / 0.05), hsl(217 91% 53% / 0.08), hsl(160 84% 39% / 0.05));
+    --section-alt: 210 20% 97%;
+    --teal-glow: 174 84% 32%;
+    --blue-trust: 217 91% 53%;
+    --emerald-success: 160 84% 39%;
+    --shadow-card: 0 4px 24px -4px hsl(174 84% 32% / 0.1);
+    --shadow-card-hover: 0 12px 40px -8px hsl(174 84% 32% / 0.2);
+    --shadow-hero: 0 20px 60px -12px hsl(217 91% 53% / 0.15);
+
+    font-family: 'Inter', sans-serif;
+  }
+
+  .dark {
+    --background: 213 32% 6%;
+    --foreground: 210 20% 95%;
+    --card: 213 32% 10%;
+    --card-foreground: 210 20% 95%;
+    --popover: 213 32% 10%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 174 84% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 213 32% 15%;
+    --muted-foreground: 215 16% 60%;
+    --accent: 160 84% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 213 32% 20%;
+    --input: 213 32% 20%;
+    --ring: 174 84% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-4 py-16 md:px-8 md:py-24 lg:px-16;
+  }
+  .section-alt {
+    background-color: hsl(var(--section-alt));
+  }
+  .container-main {
+    @apply mx-auto max-w-7xl;
+  }
+  .hero-gradient-bg {
+    background: var(--hero-gradient);
+  }
+  .card-medical {
+    @apply rounded-xl bg-card border border-border p-6 transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+  .card-medical:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+  }
+  .btn-primary-medical {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all duration-300;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-family: 'Montserrat', sans-serif;
+  }
+  .btn-primary-medical:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 24px -4px hsl(var(--primary) / 0.35);
+  }
+  .btn-secondary-medical {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all duration-300 border-2;
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+    font-family: 'Montserrat', sans-serif;
+  }
+  .btn-secondary-medical:hover {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    transform: scale(1.03);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .floating-whatsapp {
+    @apply fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-300;
+    background-color: #25D366;
+  }
+  .floating-whatsapp:hover {
+    transform: scale(1.1);
+  }
+  .trust-badge {
+    @apply flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium;
+    background-color: hsl(var(--primary) / 0.08);
+    color: hsl(var(--primary));
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: float 8s ease-in-out infinite;
+  }
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 2s infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+html {
+  scroll-behavior: smooth;
+}
